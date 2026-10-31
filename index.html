@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>50 dias até o Natal</title>
+<meta name="theme-color" content="#6E2A35">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="50 dias">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Nunito+Sans:wght@400;600;700&display=swap">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <span class="eyebrow">03/11 a 22/12</span>
+    <h1>50 dias até o Natal</h1>
+    <span class="sub" id="countdown">Caminhando juntas até o nascimento de Jesus</span>
+  </header>
+
+  <!-- Entrar -->
+  <section class="card" id="login" hidden>
+    <h2>Entrar</h2>
+    <p class="hint">Use o mesmo e-mail e senha no celular, no tablet ou no notebook. As suas marcações aparecem em todos.</p>
+    <form id="fLogin" class="col">
+      <div class="field"><label class="f" for="email">E-mail</label><input type="email" id="email" autocomplete="email" required></div>
+      <div class="field"><label class="f" for="senha">Senha</label><input type="password" id="senha" autocomplete="current-password" minlength="6" required></div>
+      <button class="btn" type="submit" id="bEntrar">Entrar</button>
+      <button class="link" type="button" id="bCriar">Primeira vez? Criar a minha conta</button>
+      <button class="link" type="button" id="bEsqueci">Esqueci a senha</button>
+      <p class="aviso" id="loginMsg" aria-live="polite"></p>
+      <p class="hint small">Ao criar a conta você concorda com o <a href="privacidade.html">aviso de privacidade</a>. Seu e-mail serve só pra entrar no app.</p>
+    </form>
+  </section>
+
+  <div id="app" hidden>
+    <!-- Hoje -->
+    <section class="card" aria-labelledby="dtitle">
+      <div class="today-top">
+        <div>
+          <div class="daynum" id="dnum">Dia 1 de 50</div>
+          <h2 id="dtitle">Terça, 03/11</h2>
+        </div>
+        <div class="nav">
+          <button id="prev" aria-label="Dia anterior">‹</button>
+          <button id="hoje" class="small-pill">hoje</button>
+          <button id="next" aria-label="Próximo dia">›</button>
+        </div>
+      </div>
+      <p class="theme" id="dtheme"></p>
+      <div class="foco" id="foco" hidden><span class="tag" id="focoTag"></span><p id="focoTxt"></p></div>
+      <h3>Minha rotina base</h3>
+      <div class="checks" id="checks"></div>
+      <p class="msg" id="msg" aria-live="polite"></p>
+      <div class="field"><label class="f" for="notaDia">Uma frase do meu dia</label>
+        <textarea id="notaDia" data-scope="dia" placeholder="Uma graça, uma frase da homilia, algo que eu senti…"></textarea></div>
+    </section>
+
+    <!-- Semana -->
+    <section class="card" aria-labelledby="wtitle">
+      <h2 id="wtitle">Semana 1</h2>
+      <p class="hint" id="wsub"></p>
+      <div class="goals" id="goals"></div>
+      <div class="field"><label class="f" for="wq">Pergunta da semana</label>
+        <p class="hint" id="wqTxt"></p><textarea id="wq" data-scope="sem" data-k="q"></textarea></div>
+      <div class="field"><label class="f" for="wck">Check-in de sábado: minhas pequenas conquistas</label>
+        <textarea id="wck" data-scope="sem" data-k="ck"></textarea></div>
+    </section>
+
+    <!-- Caminho -->
+    <section class="card" aria-labelledby="ptitle">
+      <h2 id="ptitle">Meu caminho até o Natal</h2>
+      <div class="stats">
+        <div><span class="n" id="sDias">0</span><span class="k">dias vividos</span></div>
+        <div><span class="n" id="sDeus">0</span><span class="k">com Deus</span></div>
+        <div><span class="n" id="sAgua">0</span><span class="k">de água</span></div>
+        <div><span class="n" id="sMov">0</span><span class="k">de movimento</span></div>
+      </div>
+      <div class="path" id="path"></div>
+      <div class="legend"><span class="l1">ainda não</span><span class="l2">um pouquinho</span><span class="l3">rotina completa</span></div>
+    </section>
+
+    <!-- Anotações -->
+    <section class="card">
+      <h2>💌 Minha cartinha</h2>
+      <p class="hint">Escrita no dia 1. No dia 22/12 a gente lê de novo.</p>
+      <div class="field"><label class="f" for="c1">Como eu estou chegando nesses 50 dias</label><textarea id="c1" data-scope="geral"></textarea></div>
+      <div class="field"><label class="f" for="c2">O que eu deixei de lado e quero trazer de volta</label><textarea id="c2" data-scope="geral"></textarea></div>
+      <div class="field"><label class="f" for="c3">Como eu quero estar no dia 22/12</label><textarea id="c3" data-scope="geral"></textarea></div>
+    </section>
+
+    <section class="card">
+      <h2>📖 Aquilo que eu venho adiando</h2>
+      <div class="field"><label class="f" for="a1">O que eu vou começar nesses 50 dias</label><input type="text" id="a1" data-scope="geral" placeholder="Ex.: ler um livro, crochê, estudar inglês"></div>
+      <div class="field"><label class="f" for="a2">O meu primeiro passo (bem pequeno)</label><input type="text" id="a2" data-scope="geral" placeholder="Ex.: 10 páginas no sábado"></div>
+    </section>
+
+    <section class="card">
+      <h2>🎄 Encerramento</h2>
+      <div class="field"><label class="f" for="e1">O que mudou em mim</label><textarea id="e1" data-scope="geral"></textarea></div>
+      <div class="field"><label class="f" for="e2">O hábito que eu levo comigo</label><textarea id="e2" data-scope="geral"></textarea></div>
+    </section>
+
+    <section class="card">
+      <h2>✨ Meus planos pra 2027</h2>
+      <div class="field"><label class="f" for="p1">Com Deus</label><textarea id="p1" data-scope="geral"></textarea></div>
+      <div class="field"><label class="f" for="p2">Comigo</label><textarea id="p2" data-scope="geral"></textarea></div>
+      <div class="field"><label class="f" for="p3">Com quem eu amo</label><textarea id="p3" data-scope="geral"></textarea></div>
+    </section>
+
+    <section class="card install" id="install">
+      <h2>📲 Coloque na tela inicial</h2>
+      <p class="hint"><b>iPhone:</b> no Safari, toque em Compartilhar (o quadradinho com a setinha) e depois em “Adicionar à Tela de Início”.</p>
+      <p class="hint"><b>Android:</b> no Chrome, toque nos três pontinhos e depois em “Adicionar à tela inicial” ou “Instalar app”.</p>
+    </section>
+
+    <p class="sync" id="sync" aria-live="polite"></p>
+    <button class="link" id="sair">Sair da conta (<span id="quem"></span>)</button>
+  </div>
+
+  <footer>
+    <b>Vamos caminhar juntas até o Céu 🤍</b>
+    <span>@joynogueira.fit · <a href="privacidade.html">privacidade</a></span>
+  </footer>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+<script src="config.js"></script>
+<script src="dados.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

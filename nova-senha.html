@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Nova senha · 50 dias até o Natal</title><link rel="stylesheet" href="style.css"></head>
+<body><div class="wrap"><section class="card">
+<h2>Criar uma senha nova</h2>
+<form id="f" class="col">
+<div class="field"><label class="f" for="s">Nova senha</label><input type="password" id="s" minlength="6" autocomplete="new-password" required></div>
+<button class="btn" type="submit">Salvar senha</button><p class="aviso" id="m" aria-live="polite"></p>
+</form></section></div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+<script src="config.js"></script>
+<script>
+var c = window.PLANNER_CONFIG, sb = window.supabase.createClient(c.url, c.anonKey);
+document.getElementById('f').addEventListener('submit', function(e){
+  e.preventDefault(); var m = document.getElementById('m'); m.textContent = 'Salvando…';
+  sb.auth.updateUser({password: document.getElementById('s').value}).then(function(r){
+    if (r.error) m.textContent = 'O link venceu ou já foi usado. Peça outro em “Esqueci a senha”.';
+    else { m.textContent = 'Senha nova salva! Abrindo o app…'; setTimeout(function(){ location.href = './'; }, 1200); }
+  });
+});
+</script></body></html>
