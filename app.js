@@ -51,7 +51,7 @@
   // ---------- telas ----------
   function countdown(){
     var cd = $('countdown');
-    if (ti < 0) cd.textContent = 'Começa na terça, 03/11 · faltam ' + (-ti) + (ti === -1 ? ' dia' : ' dias');
+    if (ti < 0) cd.textContent = 'Começa na terça, 03/11 · ' + (ti === -1 ? 'falta 1 dia' : 'faltam ' + (-ti) + ' dias');
     else if (ti >= TOTAL) cd.textContent = 'Feliz Natal! Que Jesus nasça de novo no seu coração 🤍';
     else cd.textContent = 'Hoje é o dia ' + (ti+1) + ' de 50';
   }

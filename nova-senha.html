@@ -1,14 +1,14 @@
 <!doctype html>
 <html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Nova senha · 50 dias até o Natal</title><link rel="stylesheet" href="style.css?v=3"></head>
+<title>Nova senha · 50 dias até o Natal</title><link rel="stylesheet" href="style.css?v=4"></head>
 <body><div class="wrap"><section class="card">
 <h2>Criar uma senha nova</h2>
 <form id="f" class="col">
 <div class="field"><label class="f" for="s">Nova senha</label><input type="password" id="s" minlength="6" autocomplete="new-password" required></div>
 <button class="btn" type="submit">Salvar senha</button><p class="aviso" id="m" aria-live="polite"></p>
 </form></section></div>
-<script src="supabase.js?v=3"></script>
-<script src="config.js?v=3"></script>
+<script src="supabase.js?v=4"></script>
+<script src="config.js?v=4"></script>
 <script>
 var c = window.PLANNER_CONFIG, sb = window.supabase.createClient(c.url, c.anonKey);
 document.getElementById('f').addEventListener('submit', function(e){
