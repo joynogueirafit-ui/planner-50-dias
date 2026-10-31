@@ -77,3 +77,6 @@ footer{text-align:center;color:var(--muted);font-size:14px;display:flex;flex-dir
 footer b{color:var(--wine)}
 @media (display-mode: standalone){.install{display:none}}
 @media (prefers-reduced-motion:no-preference){.check .box,.dot{transition:background .2s,border-color .2s}}
+.tabs{display:grid;grid-template-columns:1fr 1fr;background:var(--bg);border:1px solid var(--line);border-radius:999px;padding:4px;gap:4px}
+.tabs button{border:0;background:transparent;border-radius:999px;padding:10px;font:inherit;font-weight:700;color:var(--muted);cursor:pointer}
+.tabs button[aria-selected="true"]{background:var(--wine);color:var(--on-wine)}

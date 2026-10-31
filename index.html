@@ -25,14 +25,17 @@
 
   <!-- Entrar -->
   <section class="card" id="login" hidden>
-    <h2>Entrar</h2>
-    <p class="hint">Use o mesmo e-mail e senha no celular, no tablet ou no notebook. As suas marcações aparecem em todos.</p>
+    <div class="tabs" role="tablist">
+      <button type="button" role="tab" id="tCriar" aria-selected="true">Primeira vez</button>
+      <button type="button" role="tab" id="tEntrar" aria-selected="false">Já tenho conta</button>
+    </div>
+    <h2 id="lTitulo">Criar a minha conta</h2>
+    <p class="hint" id="lHint">Coloque o seu e-mail e crie uma senha. Com eles você entra no celular, no tablet ou no notebook, e as suas marcações aparecem em todos.</p>
     <form id="fLogin" class="col">
       <div class="field"><label class="f" for="email">E-mail</label><input type="email" id="email" autocomplete="email" required></div>
-      <div class="field"><label class="f" for="senha">Senha</label><input type="password" id="senha" autocomplete="current-password" minlength="6" required></div>
-      <button class="btn" type="submit" id="bEntrar">Entrar</button>
-      <button class="link" type="button" id="bCriar">Primeira vez? Criar a minha conta</button>
-      <button class="link" type="button" id="bEsqueci">Esqueci a senha</button>
+      <div class="field"><label class="f" for="senha" id="lSenha">Crie uma senha (mínimo 6 letras ou números)</label><input type="password" id="senha" autocomplete="new-password" minlength="6" required></div>
+      <button class="btn" type="submit" id="bEntrar">Criar a minha conta</button>
+      <button class="link" type="button" id="bEsqueci" hidden>Esqueci a senha</button>
       <p class="aviso" id="loginMsg" aria-live="polite"></p>
       <p class="hint small">Ao criar a conta você concorda com o <a href="privacidade.html">aviso de privacidade</a>. Seu e-mail serve só pra entrar no app.</p>
     </form>

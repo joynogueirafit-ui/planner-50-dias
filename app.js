@@ -133,28 +133,49 @@
   var msg = function(t){ $('loginMsg').textContent = t; };
   function traduz(e){
     var m = (e && e.message || '').toLowerCase();
-    if (m.indexOf('invalid login') >= 0) return 'E-mail ou senha não conferem. Primeira vez? Toque em “Criar a minha conta”.';
-    if (m.indexOf('already registered') >= 0) return 'Esse e-mail já tem conta. É só entrar com a sua senha.';
+    if (m.indexOf('invalid login') >= 0) return 'E-mail ou senha não conferem. Primeira vez? Toque em “Primeira vez” lá em cima.';
+    if (m.indexOf('already registered') >= 0) return 'Esse e-mail já tem conta. Toque em “Já tenho conta” e entre com a sua senha.';
     if (m.indexOf('password') >= 0) return 'A senha precisa ter pelo menos 6 caracteres.';
+    if (m.indexOf('timeout') >= 0) return 'Demorou demais pra responder. Confere a internet e tenta de novo.';
     if (m.indexOf('rate') >= 0) return 'Muitas tentativas agora. Espera uns minutinhos e tenta de novo.';
     return 'Não deu certo agora. Confere a internet e tenta de novo.';
   }
   function entrou(u){ user = u; load().then(showApp); }
+  var modo = 'criar';
+  function setModo(m){
+    modo = m; msg('');
+    $('tCriar').setAttribute('aria-selected', m === 'criar'); $('tEntrar').setAttribute('aria-selected', m === 'entrar');
+    $('lTitulo').textContent = m === 'criar' ? 'Criar a minha conta' : 'Entrar';
+    $('lHint').textContent = m === 'criar' ? 'Coloque o seu e-mail e crie uma senha. Com eles você entra no celular, no tablet ou no notebook, e as suas marcações aparecem em todos.' : 'Entre com o e-mail e a senha que você criou.';
+    $('lSenha').textContent = m === 'criar' ? 'Crie uma senha (mínimo 6 letras ou números)' : 'Senha';
+    $('senha').setAttribute('autocomplete', m === 'criar' ? 'new-password' : 'current-password');
+    $('bEntrar').textContent = m === 'criar' ? 'Criar a minha conta' : 'Entrar';
+    $('bEsqueci').hidden = m === 'criar';
+  }
+  $('tCriar').addEventListener('click', function(){ setModo('criar'); });
+  $('tEntrar').addEventListener('click', function(){ setModo('entrar'); });
+  function comPrazo(p){
+    return Promise.race([p, new Promise(function(res){ setTimeout(function(){ res({error:{message:'timeout'}}); }, 20000); })]);
+  }
   $('fLogin').addEventListener('submit', function(ev){
-    ev.preventDefault(); msg('Entrando…');
-    sb.auth.signInWithPassword({email: $('email').value.trim(), password: $('senha').value}).then(function(r){
-      if (r.error) msg(traduz(r.error)); else { msg(''); entrou(r.data.user); }
-    });
-  });
-  $('bCriar').addEventListener('click', function(){
+    ev.preventDefault();
     var email = $('email').value.trim(), senha = $('senha').value;
-    if (!email || senha.length < 6) { msg('Preencha o seu e-mail e crie uma senha de pelo menos 6 caracteres.'); return; }
-    msg('Criando a sua conta…');
-    sb.auth.signUp({email: email, password: senha}).then(function(r){
-      if (r.error) msg(traduz(r.error));
-      else if (r.data.session) { msg(''); entrou(r.data.user); }
-      else msg('Conta criada! Confira o seu e-mail pra confirmar e depois entre aqui.');
-    });
+    $('bEntrar').disabled = true;
+    var fim = function(){ $('bEntrar').disabled = false; };
+    if (modo === 'entrar') {
+      msg('Entrando…');
+      comPrazo(sb.auth.signInWithPassword({email: email, password: senha})).then(function(r){
+        fim(); if (r.error) msg(traduz(r.error)); else { msg(''); entrou(r.data.user); }
+      });
+    } else {
+      msg('Criando a sua conta…');
+      comPrazo(sb.auth.signUp({email: email, password: senha})).then(function(r){
+        fim();
+        if (r.error) msg(traduz(r.error));
+        else if (r.data.session) { msg(''); entrou(r.data.user); }
+        else msg('Conta criada! Confira o seu e-mail pra confirmar e depois entre em “Já tenho conta”.');
+      });
+    }
   });
   $('bEsqueci').addEventListener('click', function(){
     var email = $('email').value.trim();
@@ -164,7 +185,7 @@
     });
   });
   $('sair').addEventListener('click', function(){
-    if (sb) sb.auth.signOut().then(function(){ user = null; st = blank(); showLogin(); });
+    if (sb) sb.auth.signOut().then(function(){ user = null; st = blank(); setModo('entrar'); showLogin(); });
   });
 
   countdown();
