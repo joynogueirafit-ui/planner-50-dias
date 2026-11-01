@@ -1,5 +1,5 @@
 // Guarda o app pra abrir mesmo sem internet. Os dados vêm sempre do Supabase quando há conexão.
-var CACHE = 'p50-v3';
+var CACHE = 'p50-v4';
 var FILES = ['./', 'index.html', 'style.css', 'app.js', 'dados.js', 'config.js', 'supabase.js', 'manifest.webmanifest', 'icon-192.png'];
 self.addEventListener('install', function(e){ e.waitUntil(caches.open(CACHE).then(function(c){ return c.addAll(FILES); })); self.skipWaiting(); });
 self.addEventListener('activate', function(e){ e.waitUntil(caches.keys().then(function(ks){ return Promise.all(ks.filter(function(k){ return k !== CACHE; }).map(function(k){ return caches.delete(k); })); })); self.clients.claim(); });

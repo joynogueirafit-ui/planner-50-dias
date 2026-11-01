@@ -80,7 +80,8 @@
   }
   function renderWeek(){
     var w = weekOf(cur), r = weekRange(w), s = st.sem[w] || {};
-    var t = {mov:0, adiei:0, deus:0, agua:0}, n = r[1]-r[0]+1;
+    var t = {mov:0, adiei:0, deus:0, agua:0}, n = 0;
+    for (var j=r[0]; j<=r[1]; j++) if (dateOf(j).getDay() !== 0) n++;
     for (var i=r[0]; i<=r[1]; i++){ var d = st.dias[i] || {}; for (var k in t) if (d[k]) t[k]++; }
     $('wtitle').textContent = w === 7 ? 'Encerramento' : 'Semana ' + (w+1);
     $('wsub').textContent = ddmm(dateOf(r[0])) + ' a ' + ddmm(dateOf(r[1])) + ' · ' + SEM[w];
