@@ -14,7 +14,7 @@
   var sb = (!demo && window.supabase) ? window.supabase.createClient(cfg.url, cfg.anonKey) : null;
   var user = null, st = blank(), timer = null;
 
-  function blank(){ return {dias:{}, sem:{}, geral:{}}; }
+  function blank(){ return {dias:{}, sem:{}, geral:{}, nov:{}}; }
   function $(id){ return document.getElementById(id); }
   function pad(n){ return (n<10?'0':'')+n; }
   function dateOf(i){ var d = new Date(START); d.setDate(d.getDate()+i); return d; }
@@ -111,6 +111,65 @@
   }
   function renderAll(){ renderDay(); renderWeek(); renderPath(); }
 
+
+  // ---------- novenas ----------
+  var novAberta = null, novDia = 0;
+  function esc(s){ return String(s).replace(/[&<>"]/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); }
+  function hoje0(){ var t = new Date(); t.setHours(0,0,0,0); return t; }
+  function novInfo(n){
+    var ini = new Date(n.inicio[0], n.inicio[1], n.inicio[2]), diff = Math.round((hoje0()-ini)/864e5);
+    return {ini: ini, diff: diff, dia: diff+1};
+  }
+  function novStatus(n, f){
+    var feitos = st.nov[n.id] || {}, nf = Object.keys(feitos).filter(function(k){ return feitos[k]; }).length;
+    if (f.diff < 0) { var x = -f.diff; return {lock: true, txt: x === 1 ? 'começa amanhã' : 'faltam ' + x + ' dias', sub: 'Começa em ' + ddmm(f.ini) + ' · festa ' + n.festa}; }
+    if (!n.dias) return {lock: true, txt: 'em breve', sub: 'Começou em ' + ddmm(f.ini) + ' · festa ' + n.festa};
+    if (f.dia <= 9) return {lock: false, txt: 'dia ' + f.dia + ' de 9', sub: n.sub + ' · ' + nf + ' de 9 rezados'};
+    return {lock: false, txt: 'concluída', sub: nf + ' de 9 rezados · festa ' + n.festa};
+  }
+  function renderNovenas(){
+    var box = $('novs'); if (!box) return; box.innerHTML = '';
+    (window.NOVENAS || []).forEach(function(n){
+      var f = novInfo(n), s = novStatus(n, f);
+      var b = document.createElement('button'); b.type = 'button'; b.className = 'nov' + (s.lock ? ' lock' : '');
+      b.setAttribute('aria-expanded', novAberta === n.id ? 'true' : 'false');
+      b.innerHTML = '<span class="em" aria-hidden="true">'+n.emoji+'</span><span class="t"><b>'+esc(n.nome)+'</b><small>'+esc(s.sub)+'</small></span><span class="st">'+(s.lock?'🔒 ':'')+esc(s.txt)+'</span>';
+      if (!s.lock) b.addEventListener('click', function(){
+        if (novAberta === n.id) { novAberta = null; } else { novAberta = n.id; novDia = Math.min(Math.max(f.dia,1),9); }
+        renderNovenas();
+      });
+      box.appendChild(b);
+    });
+    renderNovLeitura();
+  }
+  function bloco(tit, paras, destaque){
+    return '<div class="oracao'+(destaque?' destaque':'')+'"><h4>'+esc(tit)+'</h4>' + [].concat(paras).map(function(p){ return '<p>'+esc(p)+'</p>'; }).join('') + '</div>';
+  }
+  function renderNovLeitura(){
+    var r = $('novread'), n = (window.NOVENAS || []).filter(function(x){ return x.id === novAberta; })[0];
+    if (!n) { r.hidden = true; r.innerHTML = ''; return; }
+    var f = novInfo(n), feitos = st.nov[n.id] || {}, h = '';
+    h += '<div class="ndays" role="group" aria-label="Dias da novena">';
+    for (var i=1; i<=9; i++) h += '<button type="button" data-d="'+i+'" class="'+(feitos[i]?'done ':'')+(i===novDia?'sel':'')+'"'+(i>f.dia?' disabled':'')+' aria-label="Dia '+i+(feitos[i]?', rezado':'')+'">'+i+'</button>';
+    h += '</div>';
+    h += '<h3>'+esc(n.nome)+' · '+novDia+'º dia</h3>';
+    if (novDia === 1 && n.origem) h += bloco('Um pouco da história', n.origem);
+    h += bloco('Oração inicial', n.inicial);
+    h += bloco('Oração do ' + novDia + 'º dia', n.dias[novDia-1], true);
+    h += bloco('Oração final', n.final);
+    h += bloco('3 Ave-Marias', n.ave);
+    h += bloco('Para encerrar', n.fim);
+    h += '<button type="button" class="btn" id="novFeito">'+(feitos[novDia] ? 'Rezei o '+novDia+'º dia ✓' : 'Marcar: rezei o '+novDia+'º dia')+'</button>';
+    if (n.fonte) h += '<p class="nfonte">'+esc(n.fonte)+'</p>';
+    r.innerHTML = h; r.hidden = false;
+    r.querySelectorAll('.ndays button').forEach(function(b){ b.addEventListener('click', function(){ novDia = +b.dataset.d; renderNovLeitura(); }); });
+    $('novFeito').addEventListener('click', function(){
+      var m = st.nov[n.id] = st.nov[n.id] || {}; m[novDia] = !m[novDia];
+      if (m[novDia] && f.dia === novDia && cur === ti) { var dd = st.dias[cur] = st.dias[cur] || {}; dd.deus = true; renderAll(); }
+      save(); renderNovenas();
+    });
+  }
+
   // campos de texto
   $('notaDia').addEventListener('input', function(){ var dd = st.dias[cur] = st.dias[cur] || {}; dd.nota = this.value; save(); });
   document.querySelectorAll('[data-scope="sem"]').forEach(function(el){
@@ -126,7 +185,7 @@
   function showApp(){
     $('login').hidden = true; $('app').hidden = false;
     $('quem').textContent = user ? user.email : 'modo de teste';
-    renderGeral(); renderAll();
+    renderGeral(); renderAll(); renderNovenas();
   }
   function showLogin(){ $('login').hidden = false; $('app').hidden = true; }
 

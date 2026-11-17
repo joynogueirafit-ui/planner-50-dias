@@ -13,7 +13,7 @@
 <link rel="apple-touch-icon" href="icon-192.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Nunito+Sans:wght@400;600;700&display=swap">
-<link rel="stylesheet" href="style.css?v=5">
+<link rel="stylesheet" href="style.css?v=6">
 </head>
 <body>
 <div class="wrap">
@@ -62,6 +62,14 @@
       <p class="msg" id="msg" aria-live="polite"></p>
       <div class="field"><label class="f" for="notaDia">Uma frase do meu dia</label>
         <textarea id="notaDia" data-scope="dia" placeholder="Uma graça, uma frase da homilia, algo que eu senti…"></textarea></div>
+    </section>
+
+    <!-- Novenas -->
+    <section class="card" aria-labelledby="ntitle">
+      <h2 id="ntitle">🙏 Novenas</h2>
+      <p class="hint">Rezamos juntas dentro dos 50 dias. Quem quiser, reza com a gente.</p>
+      <div class="novs" id="novs"></div>
+      <div class="novread" id="novread" hidden></div>
     </section>
 
     <!-- Semana -->
@@ -132,9 +140,10 @@
   </footer>
 </div>
 
-<script src="supabase.js?v=5"></script>
-<script src="config.js?v=5"></script>
-<script src="dados.js?v=5"></script>
-<script src="app.js?v=5"></script>
+<script src="supabase.js?v=6"></script>
+<script src="config.js?v=6"></script>
+<script src="dados.js?v=6"></script>
+<script src="novenas.js?v=6"></script>
+<script src="app.js?v=6"></script>
 </body>
 </html>
