@@ -14,7 +14,7 @@
   var sb = (!demo && window.supabase) ? window.supabase.createClient(cfg.url, cfg.anonKey) : null;
   var user = null, st = blank(), timer = null;
 
-  function blank(){ return {dias:{}, sem:{}, geral:{}, nov:{}}; }
+  function blank(){ return {dias:{}, sem:{}, geral:{}, nov:{}, novInt:{}}; }
   function $(id){ return document.getElementById(id); }
   function pad(n){ return (n<10?'0':'')+n; }
   function dateOf(i){ var d = new Date(START); d.setDate(d.getDate()+i); return d; }
@@ -154,6 +154,7 @@
     h += '<div class="ndays" role="group" aria-label="Dias da novena">';
     for (var i=1; i<=9; i++) h += '<button type="button" data-d="'+i+'" class="'+(feitos[i]?'done ':'')+(i===novDia?'sel':'')+'"'+(i>f.dia+1?' disabled':'')+' aria-label="Dia '+i+(feitos[i]?', rezado':'')+'">'+i+'</button>';
     h += '</div>';
+    h += '<div class="field"><label class="f" for="novInt">🕯️ Minha intenção / a graça que eu peço</label><textarea id="novInt" placeholder="Escreva aqui por quem ou pelo que você está rezando nessa novena…"></textarea></div>';
     h += '<h3>'+esc(n.nome)+' · '+novDia+'º dia</h3>';
     if (novDia === 1 && n.origem) h += bloco('Um pouco da história', n.origem);
     h += bloco('Oração inicial', n.inicial);
@@ -164,6 +165,8 @@
     h += '<button type="button" class="btn" id="novFeito">'+(feitos[novDia] ? 'Rezei o '+novDia+'º dia ✓' : 'Marcar: rezei o '+novDia+'º dia')+'</button>';
     if (n.fonte) h += '<p class="nfonte">'+esc(n.fonte)+'</p>';
     r.innerHTML = h; r.hidden = false;
+    var ti2 = $('novInt'); ti2.value = (st.novInt || {})[n.id] || '';
+    ti2.addEventListener('input', function(){ st.novInt = st.novInt || {}; st.novInt[n.id] = ti2.value; save(); });
     r.querySelectorAll('.ndays button').forEach(function(b){ b.addEventListener('click', function(){ novDia = +b.dataset.d; renderNovLeitura(); }); });
     $('novFeito').addEventListener('click', function(){
       var m = st.nov[n.id] = st.nov[n.id] || {}; m[novDia] = !m[novDia];
