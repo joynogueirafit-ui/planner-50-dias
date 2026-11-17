@@ -122,7 +122,9 @@
   }
   function novStatus(n, f){
     var feitos = st.nov[n.id] || {}, nf = Object.keys(feitos).filter(function(k){ return feitos[k]; }).length;
-    if (f.diff < 0) { var x = -f.diff; return {lock: true, txt: x === 1 ? 'começa amanhã' : 'faltam ' + x + ' dias', sub: 'Começa em ' + ddmm(f.ini) + ' · festa ' + n.festa}; }
+    // cada dia libera um dia antes (a novena abre na véspera do início)
+    if (f.diff === -1 && n.dias) return {lock: false, txt: 'começa amanhã', sub: n.sub + ' · o 1º dia já está liberado'};
+    if (f.diff < 0 || !n.dias) { var x = -f.diff; if (f.diff < 0) return {lock: true, txt: x === 1 ? 'começa amanhã' : 'faltam ' + x + ' dias', sub: 'Começa em ' + ddmm(f.ini) + ' · festa ' + n.festa}; }
     if (!n.dias) return {lock: true, txt: 'em breve', sub: 'Começou em ' + ddmm(f.ini) + ' · festa ' + n.festa};
     if (f.dia <= 9) return {lock: false, txt: 'dia ' + f.dia + ' de 9', sub: n.sub + ' · ' + nf + ' de 9 rezados'};
     return {lock: false, txt: 'concluída', sub: nf + ' de 9 rezados · festa ' + n.festa};
@@ -150,7 +152,7 @@
     if (!n) { r.hidden = true; r.innerHTML = ''; return; }
     var f = novInfo(n), feitos = st.nov[n.id] || {}, h = '';
     h += '<div class="ndays" role="group" aria-label="Dias da novena">';
-    for (var i=1; i<=9; i++) h += '<button type="button" data-d="'+i+'" class="'+(feitos[i]?'done ':'')+(i===novDia?'sel':'')+'"'+(i>f.dia?' disabled':'')+' aria-label="Dia '+i+(feitos[i]?', rezado':'')+'">'+i+'</button>';
+    for (var i=1; i<=9; i++) h += '<button type="button" data-d="'+i+'" class="'+(feitos[i]?'done ':'')+(i===novDia?'sel':'')+'"'+(i>f.dia+1?' disabled':'')+' aria-label="Dia '+i+(feitos[i]?', rezado':'')+'">'+i+'</button>';
     h += '</div>';
     h += '<h3>'+esc(n.nome)+' · '+novDia+'º dia</h3>';
     if (novDia === 1 && n.origem) h += bloco('Um pouco da história', n.origem);
